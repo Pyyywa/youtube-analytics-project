@@ -18,6 +18,7 @@ class Channel:
 Дальше все данные будут подтягиваться по API."""
         self.channel_id = channel_id
         self.youtube = self.get_service().channels().list(id = self.channel_id, part = 'snippet,statistics').execute()
+
         self.title = self.youtube['items'][0]['snippet']['title']
         self.description = self.youtube["items"][0]["snippet"]["description"]
         self.url = self.youtube["items"][0]["snippet"]["thumbnails"]["high"]["url"]
@@ -34,31 +35,45 @@ class Channel:
 
 
     def __add__(self, other):
-        return (self.subscriber_count + other.subscriber_count)
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count + other.subscriber_count)
+        return ValueError
 
 
     def __sub__(self, other):
-        return (self.subscriber_count - other.subscriber_count)
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count - other.subscriber_count)
+        return ValueError
 
 
     def __lt__(self, other):
-        return self.subscriber_count < other.subscriber_count
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count < other.subscriber_count)
+        return ValueError
 
 
     def __le__(self, other):
-        return self.subscriber_count <= other.subscriber_count
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count <= other.subscriber_count)
+        return ValueError
 
 
     def __gt__(self, other):
-        return self.subscriber_count > other.subscriber_count
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count > other.subscriber_count)
+        return ValueError
 
 
     def __ge__(self, other):
-        return self.subscriber_count >= other.subscriber_count
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count >= other.subscriber_count)
+        return ValueError
 
 
     def __eq__(self, other):
-        return self.subscriber_count == other.subscriber_count
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count == other.subscriber_count)
+        return ValueError
 
 
     def print_info(self) -> None:
