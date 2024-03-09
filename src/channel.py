@@ -35,31 +35,45 @@ class Channel:
 
 
     def __add__(self, other):
-        return (self.subscriber_count + other.subscriber_count)
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count + other.subscriber_count)
+        return ValueError
 
 
     def __sub__(self, other):
-        return (self.subscriber_count - other.subscriber_count)
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count - other.subscriber_count)
+        return ValueError
 
 
     def __lt__(self, other):
-        return self.subscriber_count < other.subscriber_count
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count < other.subscriber_count)
+        return ValueError
 
 
     def __le__(self, other):
-        return self.subscriber_count <= other.subscriber_count
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count <= other.subscriber_count)
+        return ValueError
 
 
     def __gt__(self, other):
-        return self.subscriber_count > other.subscriber_count
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count > other.subscriber_count)
+        return ValueError
 
 
     def __ge__(self, other):
-        return self.subscriber_count >= other.subscriber_count
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count >= other.subscriber_count)
+        return ValueError
 
 
     def __eq__(self, other):
-        return self.subscriber_count == other.subscriber_count
+        if isinstance(other, self.__class__):
+            return (self.subscriber_count == other.subscriber_count)
+        return ValueError
 
 
     def print_info(self) -> None:
