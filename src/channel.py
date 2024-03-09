@@ -18,6 +18,7 @@ class Channel:
 Дальше все данные будут подтягиваться по API."""
         self.channel_id = channel_id
         self.youtube = self.get_service().channels().list(id = self.channel_id, part = 'snippet,statistics').execute()
+
         self.title = self.youtube['items'][0]['snippet']['title']
         self.description = self.youtube["items"][0]["snippet"]["description"]
         self.url = self.youtube["items"][0]["snippet"]["thumbnails"]["high"]["url"]
