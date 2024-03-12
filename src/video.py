@@ -1,15 +1,15 @@
 import json
 import os
 from googleapiclient.discovery import build
+from src.channel import MixinLog
 
-api_key: str = os.getenv('API_KEY')
-youtube = build('youtube', 'v3', developerKey=api_key)
 
-class Video:
+class Video(MixinLog):
 
     def __init__(self, video_id):
+        super().__init__()
         self.video_id = video_id
-        self.video_response = youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
+        self.video_response = self.youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
                               id=video_id
                               ).execute()
 
@@ -23,11 +23,12 @@ class Video:
         return f"{self.video_title}"
 
 
-class PLVideo(Video):
+class PLVideo(Video, MixinLog):
     def __init__(self, video_id, playlist_id):
         super().__init__(video_id)
+        MixinLog.__init__(self)
         self.playlist_id = playlist_id
-        playlist_videos = youtube.playlistItems().list(playlistId=playlist_id,
+        playlist_videos = self.youtube.playlistItems().list(playlistId=playlist_id,
                                                        part='contentDetails',
                                                        maxResults=50,
                                                        ).execute()
