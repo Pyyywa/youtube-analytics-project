@@ -2,20 +2,22 @@ import json
 import os
 from googleapiclient.discovery import build
 
-# YT_API_KEY скопирован из гугла и вставлен в переменные окружения
-api_key: str = os.getenv('API_KEY')
 
-# создать специальный объект для работы с API
-youtube = build('youtube', 'v3', developerKey = api_key)
+class MixinLog():
+    api_key: str = os.getenv('API_KEY')
+    youtube = build('youtube', 'v3', developerKey = api_key)
+
+    def __init__(self):
+        self.youtube = self.youtube
 
 
-class Channel:
+class Channel(MixinLog):
     """ Класс для ютуб-канала """
-
 
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала.
 Дальше все данные будут подтягиваться по API."""
+        super().__init__()
         self.channel_id = channel_id
         self.youtube = self.get_service().channels().list(id = self.channel_id, part = 'snippet,statistics').execute()
 
