@@ -9,7 +9,7 @@ youtube = build('youtube', 'v3', developerKey = api_key)
 
 
 
-class Channel(MixinLog):
+class Channel():
     """ Класс для ютуб-канала """
 
     def __init__(self, channel_id: str) -> None:
