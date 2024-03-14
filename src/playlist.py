@@ -6,27 +6,30 @@ import isodate
 
 
 class MixinLog:
-    def create_api(self):
+    def __init__(self):
+        self.api_key = os.getenv('API_KEY')
+        self.youtube = build('youtube', 'v3', developerKey = self.api_key)
 
-        api_key: str = os.getenv('API_KEY')
-        youtube = build('youtube', 'v3', developerKey = api_key)
-        return youtube
+    def init(self):
+        self.playlist_info = self.youtube.playlists().list(id = self.playlist_id,
+                                                           part = 'contentDetails,snippet'
+                                                           ).execute()
+        self.playlist_videos = self.youtube.playlistItems().list(playlistId = self.playlist_id,
+                                                                part = 'contentDetails,snippet',
+                                                                maxResults = 50).execute()
+        self.video_ids = [video['contentDetails']['videoId'] for video in self.playlist_videos['items']]
+        self.video_response = self.youtube.videos().list(part = 'contentDetails,statistics',
+                                                         id = ','.join(self.video_ids)).execute()
+        self.title = self.playlist_info['items'][0]['snippet']['title']
+        self.url = f"https://www.youtube.com/playlist?list={self.playlist_id}"
+
 
 class PlayList(MixinLog):
     def __init__(self, playlist_id):
-        self._playlist_id = playlist_id
-        self.youtube = self.create_api()
-        self.playlist_info = self.youtube.playlists().list(id = playlist_id,
-                                                           part = 'contentDetails, snippet'
-                                                           ).execute()
-        self.playlist_videos = self.youtube.playlistItems().list(playlistId = playlist_id,
-                                                                 part = 'contentDetails, snippet',
-                                                                 maxResults = 50).execute()
-        self.video_ids = [video['contentDetails']['videoId'] for video in self.playlist_videos['items']]
-        self.video_response = self.youtube.videos().list(part = 'contentDetails,statistics',
-                                                         id =','.join(self.video_ids)).execute()
-        self.title = self.playlist_info['items'][0]['snippet']['title']
-        self.url = f"https://www.youtube.com/playlist?list={self._playlist_id}"
+        super().__init__()
+        self.playlist_id = playlist_id
+        super().init()
+
 
     @property
     def total_duration(self):
